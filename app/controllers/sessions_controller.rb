@@ -12,9 +12,10 @@ class SessionsController < ApplicationController
     	expires_at: Time.at(@auth['expires_at']).to_datetime )
   end
 
-  def list
-    @gmail = Gmail.new(Token.last.fresh_token)
-    @labels = JSON.parse(@gmail.labels.body)['labels']
+  def upload
+    @youtube = YouTube.new(Token.last.fresh_token)
+    file = File.
+    @response = JSON.parse(@youtube.upload())
   end
 
 end
