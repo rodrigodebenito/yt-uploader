@@ -1,4 +1,3 @@
-# app/controllers/sessions_controller.rb
 class SessionsController < ApplicationController
   layout false
 
@@ -12,4 +11,10 @@ class SessionsController < ApplicationController
     	refresh_token: @auth['refresh_token'],
     	expires_at: Time.at(@auth['expires_at']).to_datetime )
   end
+
+  def list
+    @gmail = Gmail.new(Token.last.fresh_token)
+    @labels = JSON.parse(@gmail.labels.body)['labels']
+  end
+
 end
