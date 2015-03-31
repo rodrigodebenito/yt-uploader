@@ -5,6 +5,7 @@ class SessionsController < ApplicationController
   end
 
   def create
+    #puts request.env['omniauth.auth']
     @auth = request.env['omniauth.auth']['credentials']
     Token.create(
     	access_token: @auth['token'],
@@ -12,10 +13,53 @@ class SessionsController < ApplicationController
     	expires_at: Time.at(@auth['expires_at']).to_datetime )
   end
 
+  def video
+  end
+
   def upload
-    @youtube = YouTube.new(Token.last.fresh_token)
-    file = Rails.root.join('tmp', 'assets', 'elections.mp4')
-    @response = JSON.parse(@youtube.upload(file))
+    @youtube = Youtube.new(Token.last.fresh_token)
+    file = 'tmp/assets/elections.mp4' #Rails.root.join('tmp', 'assets', 'elections.mp4')
+    @response = JSON.parse @youtube.upload(file).body
+    #puts @response
   end
 
 end
+
+=begin
+  
+Sample youtube.upload response:
+{
+  "kind" = > "youtube#video", 
+  "etag" = > "\"9iWEWaGPvvCMMVNTPHF9GiusHJA/iWweEyBpQ3UZKHlcDTKty4zUQf0\"", 
+  "id" = > "7AaoCyd4CYk", 
+  "snippet" = > {
+    "publishedAt" = > "2015-03-31T16:36:30.000Z", 
+    "channelId" = > "UCszD2X8AuRUDWIOjE0G-6YQ", 
+    "title" = > "Upload Test Title", 
+    "description" = > "Upload Test Description", 
+    "thumbnails" = > {
+      "default" = > {
+        "url" = > "https://i.ytimg.com/vi/7AaoCyd4CYk/default.jpg", "width" = > 120, "height" = > 90
+      }, "medium" = > {
+        "url" = > "https://i.ytimg.com/vi/7AaoCyd4CYk/mqdefault.jpg", "width" = > 320, "height" = > 180
+      }, "high" = > {
+        "url" = > "https://i.ytimg.com/vi/7AaoCyd4CYk/hqdefault.jpg", "width" = > 480, "height" = > 360
+      }
+    }, 
+    "channelTitle" = > "Rodrigo De Benito Sanz", 
+    "categoryId" = > "22", 
+    "liveBroadcastContent" = > "none", 
+    "localized" = > {
+      "title" = > "Upload Test Title", 
+      "description" = > "Upload Test Description"
+    }
+  }, "status" = > {
+    "uploadStatus" = > "uploaded", 
+    "privacyStatus" = > "unlisted", 
+    "license" = > "youtube", 
+    "embeddable" = > true, 
+    "publicStatsViewable" = > true
+  }
+}
+  
+=end
