@@ -14,8 +14,8 @@ class SessionsController < ApplicationController
 
   def upload
     @youtube = YouTube.new(Token.last.fresh_token)
-    file = File.
-    @response = JSON.parse(@youtube.upload())
+    file = Rails.root.join('tmp', 'assets', 'elections.mp4')
+    @response = JSON.parse(@youtube.upload(file))
   end
 
 end
