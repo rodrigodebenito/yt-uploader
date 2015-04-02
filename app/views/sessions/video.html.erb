@@ -1,0 +1,8 @@
+<div class="file-upload-button">
+	<div class="button"><span>Upload your video<span></div>
+	<%= form_tag({action: :upload}, multipart: true, id:"file-form") do %>
+    <input id="input-video-file" class="input file" 
+    type="file" name="video" accept="video/*" capture />
+    <input type="submit">
+  <% end %>
+</div>

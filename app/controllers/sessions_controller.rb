@@ -5,7 +5,6 @@ class SessionsController < ApplicationController
   end
 
   def create
-    #puts request.env['omniauth.auth']
     @auth = request.env['omniauth.auth']['credentials']
     Token.create(
     	access_token: @auth['token'],
@@ -13,20 +12,20 @@ class SessionsController < ApplicationController
     	expires_at: Time.at(@auth['expires_at']).to_datetime )
   end
 
-  def video
-  end
-
   def upload
-    @youtube = Youtube.new(Token.last.fresh_token)
-    file = 'tmp/assets/elections.mp4' #Rails.root.join('tmp', 'assets', 'elections.mp4')
-    @response = JSON.parse @youtube.upload(file).body
-    #puts @response
+    uploaded = params[:video]
+    File.open(Rails.root.join('tmp', 'uploads', uploaded.original_filename), 'wb') do |file|
+      file.write(uploaded.read)
+      filename = "tmp/uploads/#{uploaded.original_filename}"
+      @youtube = Youtube.new(Token.last.fresh_token)
+      @response = JSON.parse @youtube.upload(filename).body
+    end
   end
 
 end
 
 =begin
-  
+
 Sample youtube.upload response:
 {
   "kind" = > "youtube#video", 
@@ -61,5 +60,5 @@ Sample youtube.upload response:
     "publicStatsViewable" = > true
   }
 }
-  
+
 =end
